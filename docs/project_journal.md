@@ -22,6 +22,12 @@ created the folder structure with folders architecture, data, docs, notebooks, p
 
 Repository ready for development.
 
+## Task 2 : Create Data Dictionary
+
+### Objective: Download the dataset and go through the data and create a data dictionary file
+
+### Activities:
+
 ## Day Summary
 
 ### Completed
