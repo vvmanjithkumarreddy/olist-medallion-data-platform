@@ -16,6 +16,8 @@ Task structure:
 
 ### Outcome :
 
+---
+
 # Day 1 - Project Initiation
 
 ## Task 1 : Create Github Repository
@@ -27,10 +29,6 @@ Created the olist-medallion-data platform repository in my github account and cr
 ### Activties :
 
 created the folder structure with folders architecture, data, docs, notebooks, pipelines, sql, tests and .gitignore file
-
-### Decisions (Optional):
-
-### Challenges (Optional):
 
 ### Outcome :
 
@@ -65,19 +63,31 @@ Create the basic project in databricks and load the data.
 
 ### Activities :
 
-Created the catalog i.e olist_catalo and created the landing, bronze, silver and gold schemas for holding the landing data, bronze data, silver data and gold data.
+Created the catalog i.e olist_catalog and created the landing, bronze, silver and gold schemas for holding the landing data, bronze data, silver data and gold data.
 
 loaded the data into the volumes in the landing layer.
-
-### Decisions (optional) :
-
-### Challenges (optional) :
 
 ### Outcome :
 
 Basic Project setup is complete can start the project development in databricks.
 
-## Task : Finalize the gold layer star schema
+## Day Summary
+
+### Completed
+
+1. Created Github Repository
+2. Created Data Dictionary
+3. Created Project Setup in Databricks
+
+### Next Steps
+
+finalize the gold layer schema
+
+---
+
+# Day 2 -
+
+## Task 1: Finalize the gold layer star schema
 
 ### Objective :
 
@@ -85,18 +95,63 @@ Finalize the gold layer star schema for the project i.e what is the fact table a
 
 ### Activities :
 
-### Decisions (optional) :
+watched tutorials on dimensional modelling
+refered the datawarehouse toolkit book
+finalized the data dimensions for the gold layer
 
-### Challenges (optional) :
+### Decisions :
+
+created two versions for the dimensional model
+model: basic
+
+Facts:
+fact_orders (grain: one row per order)
+fact_order_items (grain: one row per order item)
+
+Dimensions:
+dim_customer
+dim_product
+dim_seller
+
+this is the simple version and in this version ignored the facts fact_reviews, fact_payments and dim_date
+
+we can created calculated fields in BI tool if needed
+
+model:advanced (final)
+
+Facts:
+fact_orders (grain: one row per order)
+fact_order_items (grain: one row per order item)
+fact_reviews (grain: one row per review)
+fact_payments (grain: one row per payment record)
+
+dim_customer
+dim_product
+dim_seller
+dim_date
+
+Also implement SCD (slowly changing dimensions)
+
+### Challenges :
+
+deciding on whether to keep two facts order, order_items or should merge into one fact
+
+deciding on how many fact tables and dimension tables should be and how they connect to each other.
 
 ### Outcome :
+
+Created the dimensional model for the gold layer and can proceed further with the project
 
 ## Day Summary
 
 ### Completed
 
+completed the dimensional modelling for the project
+
 ### Next Steps
+
+start the project development of creating bronze layer
 
 ---
 
-# Day 2 -
+# Day 3 -
