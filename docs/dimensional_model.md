@@ -43,10 +43,10 @@ Kimballs 4-step dimensional modelling process:
 
 what business processes exist in this system?
 
-customers place orders
-customers make payments
-customers leave reviews
-sellers sell prodcuts
+customers place orders \
+customers make payments \
+customers leave reviews \
+sellers sell prodcuts \
 
 ## Step2 - list all source tables and mark them as event or entity
 
