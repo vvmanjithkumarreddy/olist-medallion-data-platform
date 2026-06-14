@@ -109,5 +109,6 @@ This dataset has information about brazillian zip codes and its latitude and lon
 5. geolocation_state : state
 
 There is no primary key for this dataset
+This is a lookup dataset used to enrich customers and sellers data using geolocation_zip_code_prefix
 
 Also, there is an extra file product_category_name_translation.csv file for translation of the product names
