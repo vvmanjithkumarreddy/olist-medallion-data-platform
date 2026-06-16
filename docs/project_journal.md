@@ -204,7 +204,7 @@ Created Transformaion notebook for each dataset
 2. Standardized string columns by converting to lower case/upper case and trimming the extra spaces
 3. Filtered out rows having null values in important columns
 4. written custom data validations like making sure review_score is between 1 and 5,
-   timpestamp logic for delivered orders etc, review_id being 32 character lenght alphanumeric string etc
+   timpestamp logic for delivered orders etc, review_id being 32 character length alphanumeric string etc
 5. Did data enrichment using lookup tables like translating product category name from portuguese to english.
 6. written the transformed data to silver tables.
 
