@@ -112,6 +112,7 @@ Dimensions:
 dim_customer
 dim_product
 dim_seller
+dim_date
 
 this is the simple version and in this version ignored the facts fact_reviews, fact_payments and dim_date
 
@@ -155,3 +156,87 @@ start the project development of creating bronze layer
 ---
 
 # Day 3 -
+
+## Task : Create bronze layer
+
+### Objective :
+
+Create bronze layer for the olist medallion data platform
+
+### Activities :
+
+Created the Ingestion notebook for each dataset
+
+1. In each notebook Ingested the data from the landing layer
+2. Defined and enforced schema
+3. Added metadata columns filepath and ingestion timestamp columns to the dataset
+4. written the data to the bronze delta table
+
+### Outcome :
+
+bronze layer is completed and can proceed futher with silver transformations
+
+## Day Summary
+
+### Completed
+
+completed the building of bronze layer for the project
+
+### Next Steps
+
+start the building of silver layer for the project
+
+---
+
+# Day 4 -
+
+## Task : Create Silver Layer for the project
+
+### Objective :
+
+Create silver layer for the olist medallion data platform
+
+### Activities :
+
+Created Transformaion notebook for each dataset
+
+1. Filtered out invalid rows i.e rows with null primary key or duplicate key
+2. Standardized string columns by converting to lower case/upper case and trimming the extra spaces
+3. Filtered out rows having null values in important columns
+4. written custom data validations like making sure review_score is between 1 and 5,
+   timpestamp logic for delivered orders etc, review_id being 32 character lenght alphanumeric string etc
+5. Did data enrichment using lookup tables like translating product category name from portuguese to english.
+6. written the transformed data to silver tables.
+
+### Outcome :
+
+silver layer is completed and can proceed further with gold layer creation
+
+## Day Summary
+
+### Completed
+
+completed the building of silver layer for the project
+
+### Next Steps
+
+start the building of gold layer for the project
+
+---
+
+# Day 5 -
+
+## Task : Create gold layer for the project
+
+### Objective :
+
+Create gold layer for the olist medallion data platform
+i.e create fact tables and dimension tables for the star schema
+
+### Activities :
+
+### Decisions (optional) :
+
+### Challenges (optional) :
+
+### Outcome :
