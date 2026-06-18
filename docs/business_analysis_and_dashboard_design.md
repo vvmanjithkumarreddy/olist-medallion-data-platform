@@ -44,22 +44,23 @@ fact order_items:
 
 1. order items were delivered to customers, measures: count items sold
 2. how much seller earned, measures: seller revenue
-3. no detail
-4. no detail
+3. no measures
+4. no measures
 
 Potential KPIs: orders count, total revenue, average delivery time, cusotmer frequency, items sold count, seller revenue
 
 ## Step4 - KPI matrix
 
-| Area | KPI
-| sales | total orders
-| sales | total revenue
-| sales | average order value
-| operations | average delivery days
-| operations | late delivery percentage
-| products | total items sold
-| Products | category revenue
-| customers | customer count
-| customers | customer frequency
+| Area       | KPI                      |
+| ---------- | ------------------------ |
+| sales      | total orders             |
+| sales      | total revenue            |
+| sales      | average order value      |
+| operations | average delivery days    |
+| operations | late delivery percentage |
+| products   | total items sold         |
+| Products   | category revenue         |
+| customers  | customer count           |
+| customers  | customer frequency       |
 
 ## Step5 - Turn KPIs into visualizations
