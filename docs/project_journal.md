@@ -235,8 +235,9 @@ i.e create fact tables and dimension tables for the star schema
 
 ### Activities :
 
-### Decisions (optional) :
-
-### Challenges (optional) :
+Created Dimension table dim_customers, dim_sellers, dim_products and dim_date
+Created Fact tables fact_orders and fact_order_items
 
 ### Outcome :
+
+Gold layer is ready and can proceed further with creating dashboards.
