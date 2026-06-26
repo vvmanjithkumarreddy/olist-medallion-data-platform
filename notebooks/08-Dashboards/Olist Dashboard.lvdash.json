@@ -1,0 +1,1018 @@
+{
+  "datasets": [
+    {
+      "name": "7be4702d",
+      "displayName": "vw_orders",
+      "config": {
+        "version": "1.1",
+        "source": "olist_catalog.gold.vw_orders",
+        "dimensions": [
+          {
+            "name": "order_id",
+            "expr": "source.order_id",
+            "displayName": "Order Id"
+          },
+          {
+            "name": "order_item_id",
+            "expr": "source.order_item_id",
+            "displayName": "Order Item Id"
+          },
+          {
+            "name": "product_id",
+            "expr": "source.product_id",
+            "displayName": "Product Id"
+          },
+          {
+            "name": "product_category_name",
+            "expr": "source.product_category_name",
+            "displayName": "Product Category Name"
+          },
+          {
+            "name": "seller_id",
+            "expr": "source.seller_id",
+            "displayName": "Seller Id"
+          },
+          {
+            "name": "seller_city",
+            "expr": "source.seller_city",
+            "displayName": "Seller City"
+          },
+          {
+            "name": "seller_state",
+            "expr": "source.seller_state",
+            "displayName": "Seller State"
+          },
+          {
+            "name": "order_purchase_date_key",
+            "expr": "source.order_purchase_date_key",
+            "displayName": "Order Purchase Date Key"
+          },
+          {
+            "name": "price",
+            "expr": "source.price",
+            "displayName": "Price"
+          },
+          {
+            "name": "freight_value",
+            "expr": "source.freight_value",
+            "displayName": "Freight Value"
+          },
+          {
+            "name": "total_price",
+            "expr": "source.total_price",
+            "displayName": "Total Price"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          },
+          {
+            "name": "total_revenue",
+            "expr": "SUM(source.total_price)",
+            "displayName": "Total Revenue"
+          },
+          {
+            "name": "order_count",
+            "expr": "COUNT(DISTINCT source.order_id)",
+            "displayName": "Order Count"
+          },
+          {
+            "name": "average_order_value",
+            "expr": "MEASURE(total_revenue) / MEASURE(order_count)",
+            "displayName": "Average Order Value"
+          }
+        ]
+      }
+    },
+    {
+      "name": "fc1e4e5e",
+      "displayName": "vw_operations",
+      "config": {
+        "version": "1.1",
+        "source": "olist_catalog.gold.vw_operations",
+        "dimensions": [
+          {
+            "name": "order_id",
+            "expr": "source.order_id",
+            "displayName": "Order Id"
+          },
+          {
+            "name": "delivery_days",
+            "expr": "source.delivery_days",
+            "displayName": "Delivery Days"
+          },
+          {
+            "name": "estimated_delivery_days",
+            "expr": "source.estimated_delivery_days",
+            "displayName": "Estimated Delivery Days"
+          },
+          {
+            "name": "delivery_status",
+            "expr": "source.delivery_status",
+            "displayName": "Delivery Status"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "delivery_metrics",
+      "displayName": "Delivery Metrics",
+      "config": {
+        "version": "1.1",
+        "source": "SELECT \n  fo.order_id,\n  fo.order_status,\n  fo.delivery_status,\n  fo.order_purchase_date_key,\n  foi.order_item_id,\n  foi.price,\n  foi.freight_value,\n  (foi.price + foi.freight_value) as item_total\nFROM olist_catalog.gold.fact_orders fo LEFT JOIN olist_catalog.gold.fact_order_items foi\n  ON fo.order_id = foi.order_id\n",
+        "dimensions": [
+          {
+            "name": "order_id",
+            "expr": "order_id",
+            "displayName": "Order ID"
+          },
+          {
+            "name": "order_status",
+            "expr": "order_status",
+            "displayName": "Order Status"
+          },
+          {
+            "name": "delivery_status",
+            "expr": "delivery_status",
+            "displayName": "Delivery Status"
+          },
+          {
+            "name": "order_purchase_date_key",
+            "expr": "order_purchase_date_key",
+            "displayName": "Order Purchase Date Key"
+          },
+          {
+            "name": "order_item_id",
+            "expr": "order_item_id",
+            "displayName": "Order Item ID"
+          }
+        ],
+        "measures": [
+          {
+            "name": "total_delivered_orders",
+            "expr": "COUNT(DISTINCT CASE WHEN order_status = 'delivered' THEN order_id END)",
+            "displayName": "Total Delivered Orders"
+          },
+          {
+            "name": "ontime_delivered_orders",
+            "expr": "COUNT(DISTINCT CASE WHEN order_status = 'delivered' AND delivery_status = 'on_time' THEN order_id END)",
+            "displayName": "On-Time Delivered Orders"
+          },
+          {
+            "name": "ontime_delivery_rate",
+            "expr": "MEASURE(ontime_delivered_orders) * 100.0 / MEASURE(total_delivered_orders)",
+            "displayName": "On-Time Delivery Rate"
+          },
+          {
+            "name": "total_delivered_orders_value",
+            "expr": "SUM(CASE WHEN order_status = 'delivered' THEN item_total END)",
+            "displayName": "Total Delivered Orders Value"
+          },
+          {
+            "name": "total_order_items_sold",
+            "expr": "COUNT(CASE WHEN order_status = 'delivered' THEN order_item_id END)",
+            "displayName": "Total Order Items Sold"
+          },
+          {
+            "name": "total_order_items",
+            "expr": "COUNT(order_item_id)",
+            "displayName": "Total Order Items"
+          }
+        ]
+      }
+    },
+    {
+      "name": "customer_metrics",
+      "displayName": "Customer Metrics",
+      "config": {
+        "version": "1.1",
+        "source": "SELECT \n  fo.order_id,\n  dc.customer_unique_id,\n  dc.customer_state,\n  foi.price,\n  foi.freight_value,\n  (foi.price + foi.freight_value) as revenue\nFROM olist_catalog.gold.fact_orders fo JOIN olist_catalog.gold.dim_customers dc\n  ON fo.customer_sk = dc.customer_sk\nLEFT JOIN olist_catalog.gold.fact_order_items foi\n  ON fo.order_id = foi.order_id\n",
+        "dimensions": [
+          {
+            "name": "order_id",
+            "expr": "order_id",
+            "displayName": "Order ID"
+          },
+          {
+            "name": "customer_unique_id",
+            "expr": "customer_unique_id",
+            "displayName": "Customer Unique ID"
+          },
+          {
+            "name": "customer_state",
+            "expr": "customer_state",
+            "displayName": "Customer State"
+          }
+        ],
+        "measures": [
+          {
+            "name": "total_unique_customers",
+            "expr": "COUNT(DISTINCT customer_unique_id)",
+            "displayName": "Total Unique Customers"
+          },
+          {
+            "name": "total_orders",
+            "expr": "COUNT(DISTINCT order_id)",
+            "displayName": "Total Orders"
+          },
+          {
+            "name": "avg_orders_per_customer",
+            "expr": "MEASURE(total_orders) * 1.0 / MEASURE(total_unique_customers)",
+            "displayName": "Average Orders Per Customer"
+          },
+          {
+            "name": "total_revenue",
+            "expr": "SUM(revenue)",
+            "displayName": "Total Revenue"
+          }
+        ]
+      }
+    },
+    {
+      "name": "monthly_revenue",
+      "displayName": "Monthly Revenue Trend",
+      "config": {
+        "version": "1.1",
+        "source": "SELECT \n  dd.full_date,\n  dd.year,\n  dd.month,\n  dd.month_name,\n  fo.order_id,\n  foi.price,\n  foi.freight_value,\n  (foi.price + foi.freight_value) as revenue\nFROM olist_catalog.gold.fact_orders fo JOIN olist_catalog.gold.dim_date dd\n  ON fo.order_purchase_date_key = dd.date_key\nLEFT JOIN olist_catalog.gold.fact_order_items foi\n  ON fo.order_id = foi.order_id\n",
+        "dimensions": [
+          {
+            "name": "full_date",
+            "expr": "full_date",
+            "displayName": "Full Date"
+          },
+          {
+            "name": "year",
+            "expr": "year",
+            "displayName": "Year"
+          },
+          {
+            "name": "month",
+            "expr": "month",
+            "displayName": "Month"
+          },
+          {
+            "name": "month_name",
+            "expr": "month_name",
+            "displayName": "Month Name"
+          },
+          {
+            "name": "year_month",
+            "expr": "CONCAT(CAST(year AS STRING), '-', LPAD(CAST(month AS STRING), 2, '0'))",
+            "displayName": "Year-Month"
+          },
+          {
+            "name": "month_year_display",
+            "expr": "CONCAT(month_name, ' ', CAST(year AS STRING))",
+            "displayName": "Month Year Display"
+          },
+          {
+            "name": "short_month_year",
+            "expr": "CONCAT(SUBSTRING(month_name, 1, 3), ' ', CAST(year AS STRING))",
+            "displayName": "Short Month Year"
+          }
+        ],
+        "measures": [
+          {
+            "name": "total_revenue",
+            "expr": "SUM(revenue)",
+            "displayName": "Total Revenue"
+          }
+        ]
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "40803c52",
+      "displayName": "Executive Dasboard",
+      "layout": [
+        {
+          "widget": {
+            "name": "total",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "7be4702d",
+                  "fields": [
+                    {
+                      "name": "sum(total_price)",
+                      "expression": "SUM(`total_price`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Revenue"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_price)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "total-1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "7be4702d",
+                  "fields": [
+                    {
+                      "name": "countdistinct(order_id)",
+                      "expression": "COUNT(DISTINCT `order_id`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Orders"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(order_id)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "average-o",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "7be4702d",
+                  "fields": [
+                    {
+                      "name": "measure(average_order_value)",
+                      "expression": "MEASURE(`average_order_value`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Average Order Value"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(average_order_value)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "a8dbc458",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "7be4702d",
+                  "fields": [
+                    {
+                      "name": "product_category_name",
+                      "expression": "`product_category_name`"
+                    },
+                    {
+                      "name": "sum(total_price)",
+                      "expression": "SUM(`total_price`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Revenue By Product Category",
+                "showDescription": false
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "product_category_name",
+                  "axis": {
+                    "title": "Product Category",
+                    "hideLabels": false,
+                    "hideTitle": false,
+                    "labelAngle": 90
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 10
+                    },
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_price)",
+                  "axis": {
+                    "hideTitle": false,
+                    "title": "Total Revenue",
+                    "hideGrid": true,
+                    "labelAngle": 0,
+                    "hideLabels": false
+                  },
+                  "displayName": "Category Revenue",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "8f0b39e2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "7be4702d",
+                  "fields": [
+                    {
+                      "name": "product_category_name",
+                      "expression": "`product_category_name`"
+                    },
+                    {
+                      "name": "count(order_item_id)",
+                      "expression": "COUNT(`order_item_id`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Items Sold By Product Category"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "product_category_name",
+                  "axis": {
+                    "title": "Product Category"
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 10
+                    },
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "count(order_item_id)",
+                  "axis": {
+                    "title": "Items Sold"
+                  },
+                  "displayName": "Items Sold",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "total-items",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "delivery_metrics",
+                  "fields": [
+                    {
+                      "name": "measure(total_order_items)",
+                      "expression": "MEASURE(`total_order_items`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Total Items Sold"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(total_order_items)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "b278fddc",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "monthly_revenue",
+                  "fields": [
+                    {
+                      "name": "year",
+                      "expression": "`year`"
+                    },
+                    {
+                      "name": "year_month",
+                      "expression": "`year_month`"
+                    },
+                    {
+                      "name": "measure(total_revenue)",
+                      "expression": "MEASURE(`total_revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Monthly Revenue Trend"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "year_month",
+                  "axis": {
+                    "title": "Month"
+                  },
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(total_revenue)",
+                  "axis": {
+                    "title": "Revenue"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "year",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 12,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "ea58fffc",
+      "displayName": "Operations Dashboard",
+      "layout": [
+        {
+          "widget": {
+            "name": "a36",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "fc1e4e5e",
+                  "fields": [
+                    {
+                      "name": "avg(delivery_days)",
+                      "expression": "AVG(`delivery_days`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Average Delivery Days"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(delivery_days)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "338c1cc3",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "delivery_metrics",
+                  "fields": [
+                    {
+                      "name": "measure(ontime_delivery_rate)",
+                      "expression": "MEASURE(`ontime_delivery_rate`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "On_time Delivery Rate"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(ontime_delivery_rate)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "b041edda",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "delivery_metrics",
+                  "fields": [
+                    {
+                      "name": "measure(total_delivered_orders)",
+                      "expression": "MEASURE(`total_delivered_orders`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Delivered Orders "
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(total_delivered_orders)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "3501c03e",
+      "displayName": "Customer Dashboard",
+      "layout": [
+        {
+          "widget": {
+            "name": "unique_customers",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "customer_metrics",
+                  "fields": [
+                    {
+                      "name": "measure(total_unique_customers)",
+                      "expression": "MEASURE(`total_unique_customers`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Unique Customers"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(total_unique_customers)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "avg_orders",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "customer_metrics",
+                  "fields": [
+                    {
+                      "name": "measure(avg_orders_per_customer)",
+                      "expression": "MEASURE(`avg_orders_per_customer`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Average Orders Per Customer"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(avg_orders_per_customer)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "revenue_by_state",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "customer_metrics",
+                  "fields": [
+                    {
+                      "name": "customer_state",
+                      "expression": "`customer_state`"
+                    },
+                    {
+                      "name": "measure(total_revenue)",
+                      "expression": "MEASURE(`total_revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue by Customer State"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "customer_state",
+                  "axis": {
+                    "title": "Customer State"
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(total_revenue)",
+                  "axis": {
+                    "title": "Total Revenue"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 12,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {
+        "light": "#D3D3D3",
+        "dark": "#1F272D"
+      },
+      "widgetBackgroundColor": {
+        "light": "#FFFFFF",
+        "dark": "#11171C"
+      },
+      "fontColor": {
+        "light": "#11171C",
+        "dark": "#E8ECF0"
+      },
+      "selectionColor": {
+        "light": "#2272B4",
+        "dark": "#8ACAFF"
+      },
+      "visualizationColors": [
+        "#077A9D",
+        "#FFAB00",
+        "#00A972",
+        "#FF3621",
+        "#8BCAE7",
+        "#AB4057",
+        "#99DDB4",
+        "#FCA4A1",
+        "#919191",
+        "#BF7080"
+      ],
+      "widgetHeaderAlignment": "LEFT"
+    },
+    "applyModeEnabled": false
+  }
+}
