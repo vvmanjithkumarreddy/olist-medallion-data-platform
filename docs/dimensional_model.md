@@ -46,7 +46,7 @@ what business processes exist in this system?
 customers place orders \
 customers make payments \
 customers leave reviews \
-sellers sell prodcuts
+sellers sell products
 
 ## Step2 - list all source tables and mark them as event or entity
 
@@ -71,11 +71,14 @@ fact review - one row per review
 
 ## Step4 -finalize the fact tables
 
-in the basic model we are just considering the fact_order and fact_order_item
+fact_orders
+fact_order_items
+fact_payments
+fact_reviews
 
 ## Step5 - identify dimensions
 
-fact table: order
+fact table: orders
 
 who placed the order: customer (dimension - customer) \
 who recieved the order: seller (different items by different seller so no dimension) \
@@ -84,7 +87,7 @@ where - olist store (same for all so no dimension) \
 when - order_purchase date (Date dimension) \
 how - through olist (same for all so no dimension)
 
-fact table: order_item
+fact table: order_items
 
 who bough the item - customer (customer dimension) \
 who sold the item - seller (seller dimension) \
@@ -92,6 +95,22 @@ what - a product so (product dimension) \
 where - through olist (same for all so no dimension) \
 when - order_purchase date (Date dimension) \
 how - through olist (same for all so no dimension)
+
+fact: payments
+who made the payment - customer (customer dimension) \
+who recieved the payment - seller (different item payment recieved by different seller so no dimension) \
+what did he pay for - multiple products (no single answer so no dimension) \
+where - olist store (same for all so no dimension)
+when - order_purchase_date (Date dimension)
+how - through payment type (Degenerate Dimension)
+
+fact: reviews
+who answered the reviews - customer (customer dimension) \
+who recieved the reviews - olist (same for all so no dimension)
+what did he review - multiple products (no single answer so no dimension) \
+where - online (same for all so no dimension)
+when - review_creation_date and review_answer_date (Date dimension)
+how - through online (same for all so no dimension)
 
 ## Step 6 - finalize dimension tables
 
@@ -111,6 +130,14 @@ measures: \
 price \
 freight_value
 
+fact: order_payment
+measures: \
+payment_value
+
+fact: order_reviews
+measures: \
+review_score
+
 ## Step 8 - build the star schema
 
 fact_order \
@@ -122,3 +149,19 @@ dim_product \
 dim_seller \
 dim_customer \
 dim_date
+
+fact_payment \
+dim_customer \
+dim_date
+
+fact_review \
+dim_customer \
+dim_date
+
+## Step 9 - identify the conformed dimensions
+
+dim_date and dim_customer
+
+## Step 10 - build the facts and dimensions
+
+built them in project gold layer
